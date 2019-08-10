@@ -1,4 +1,4 @@
 
-public class Clock {
+class Clock {
 	int moves = 0;
 }
