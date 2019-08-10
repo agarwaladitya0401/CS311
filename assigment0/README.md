@@ -3,7 +3,8 @@
 Run using follwing commands
 
 `javac Main.java`
-`java Main
+
+`java Main`
 
 ## Output
 
