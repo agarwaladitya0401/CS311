@@ -1,6 +1,8 @@
-
+// Defines the Infiltrator
+// Inherits from Clock
 class Infiltrator extends Clock {
-	Sensor s;	
+	Sensor s;
+	// Starting position of Infiltrator
 	int current_x;
 	int current_y = 0;
 	
@@ -48,21 +50,27 @@ class Infiltrator extends Clock {
 	}
 
 	private void next_move() {
+		// If infiltrator in on the edge the he will only go to ahead
 		if (current_y == s.width - 1) {
 			if (!s.border[current_x][current_y]) {
 				current_y++;
 			}
+		// Otherwise it will find the best move out of front three
 		} else {
 			get_best_move();
 		}
 	}
 	
+	// Finds the total number of moves required by infiltrator
 	public int find_total_moves() {
 		while(current_y < s.width) {
+			// Updates the sensors
 			s.update_border();
+			// Moves the Infiltrator
 			next_move();
 			moves++;
 		}
+		// Since each move takes 10s, final answer is total moves * 10
 		return moves * 10;
 	}
 }

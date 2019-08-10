@@ -1,5 +1,6 @@
-
+// Defines the Border
 class Border {
+	// Length is 500 and width is varying
 	boolean border[][];
 	int width;
 	int length = 500;
