@@ -1,8 +1,18 @@
 	.data
 a:
-	10
+	1
 	.text
-// your code here to check if the number 'a' is even or odd. If yes, write 1 to x10. Else write -1.
-// you may change the value of 'a'
-// remove these comments!
-
+main:
+	load %x0, $a, %x10
+	addi %x0, 2, %x2
+loop:
+	blt %x10, %x2, success
+	subi %x10, 2, %x10
+	jmp loop
+success:
+	beq %x10, %x0, even
+	subi %x10, 2, %x10
+	end
+even:
+	addi %x10, 1, %x10
+	end
