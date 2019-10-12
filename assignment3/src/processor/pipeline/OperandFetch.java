@@ -64,6 +64,7 @@ public class OperandFetch {
 			{
 				instruction = "0" + instruction;
 			}
+			System.out.println(instruction);
 			String opcode = instruction.substring(0, 5);
 			int type_operation = Integer.parseInt(opcode, 2);
 			OperationType operation = operationType[type_operation];
@@ -169,18 +170,21 @@ public class OperandFetch {
 					rs1 = new Operand();
 					rs1.setOperandType(OperandType.Register);
 					registerNo = Integer.parseInt(instruction.substring(5, 10), 2);
+					System.out.println(registerNo);
 					rs1.setValue(registerNo);
 
 					// Destination register
 					rd = new Operand();
 					rd.setOperandType(OperandType.Register);
 					registerNo = Integer.parseInt(instruction.substring(10, 15), 2);
+					System.out.println(registerNo);
 					rd.setValue(registerNo);
 
 					// Immediate values
 					rs2 = new Operand();
 					rs2.setOperandType(OperandType.Immediate);
 					imm = instruction.substring(15, 32);
+					System.out.println(imm);
 					imm_val = Integer.parseInt(imm, 2);
 					if (imm.charAt(0) == '1')
 					{
