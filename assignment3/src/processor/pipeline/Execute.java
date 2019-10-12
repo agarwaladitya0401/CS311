@@ -170,6 +170,9 @@ public class Execute {
 				int op2 = containingProcessor.getRegisterFile().getValue(
 					instruction.getSourceOperand2().getValue());
 				int imm = instruction.getDestinationOperand().getValue();
+				System.out.println(op1);
+				System.out.println(op2);
+				System.out.println(instruction);
 				switch(op_type)
 				{
 					case beq:
@@ -205,7 +208,6 @@ public class Execute {
 						break;
 				}
 			}
-			System.out.println("alu_result" + Integer.toString(alu_result));
 			EX_MA_Latch.setALU_result(alu_result);
 		}
 
