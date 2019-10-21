@@ -17,7 +17,8 @@ public class OperandFetch {
 
 	public OperandFetch(Processor containingProcessor, IF_OF_LatchType iF_OF_Latch,
 						OF_EX_LatchType oF_EX_Latch, EX_MA_LatchType eX_MA_Latch,
-						MA_RW_LatchType mA_RW_Latch, IF_EnableLatchType iF_EnableLatch) {
+						MA_RW_LatchType mA_RW_Latch, IF_EnableLatchType iF_EnableLatch)
+	{
 		this.containingProcessor = containingProcessor;
 		this.IF_OF_Latch = iF_OF_Latch;
 		this.OF_EX_Latch = oF_EX_Latch;
@@ -26,54 +27,64 @@ public class OperandFetch {
 		this.IF_EnableLatch = iF_EnableLatch;
 	}
 
-	public static char flip(char c) {
+	public static char flip(char c)
+	{
 		return (c == '0') ? '1' : '0';
 	}
 
-	public static String twosComplement(String bin) {
+	public static String twosComplement(String bin)
+	{
 		String twos = "", ones = "";
-		for (int i = 0; i < bin.length(); i++) {
+		for (int i = 0; i < bin.length(); i++)
+		{
 			ones += flip(bin.charAt(i));
 		}
 
 		StringBuilder builder = new StringBuilder(ones);
 		boolean b = false;
-		for (int i = ones.length() - 1; i > 0; i--) {
-			if (ones.charAt(i) == '1') {
+		for (int i = ones.length() - 1; i > 0; i--)
+		{
+			if (ones.charAt(i) == '1')
 				builder.setCharAt(i, '0');
-			} else {
+			else
+			{
 				builder.setCharAt(i, '1');
 				b = true;
 				break;
 			}
 		}
-		if (!b) {
+		if (!b)
 			builder.append("1", 0, 7);
-		}
+
 		twos = builder.toString();
 		return twos;
 	}
 	
 	public static boolean checkConflict(Instruction instruction, int reg_1, int reg_2) {
+
 		int inst_ordinal = instruction != null && instruction.getOperationType() != null ?
 						   instruction.getOperationType().ordinal() : 1000;
 		if ((inst_ordinal <= 21 && inst_ordinal % 2 == 0) ||
 			(inst_ordinal <= 21 && inst_ordinal % 2 != 0) ||
-			inst_ordinal == 22 || inst_ordinal == 23) {
+			inst_ordinal == 22 || inst_ordinal == 23)
+		{
 			int dest_reg = instruction != null ? instruction.getDestinationOperand().getValue() : -1;
-			if (reg_1 == dest_reg || reg_2 == dest_reg) {
+			if (reg_1 == dest_reg || reg_2 == dest_reg)
 				return true;
-			} else {
+			else
 				return false;
-			}
-		} else return false;
+		} 
+		else
+			return false;
 	}
 	
-	public boolean checkConflictWithDivision(int reg_1, int reg_2) {
+	public boolean checkConflictWithDivision(int reg_1, int reg_2)
+	{
 		Instruction instruction_ex_stage = OF_EX_Latch.getInstruction();
 		Instruction instruction_ma_stage = EX_MA_Latch.getInstruction();
 		Instruction instruction_rw_stage = MA_RW_Latch.getInstruction();
-		if (reg_1 == 31 || reg_2 == 31) {
+		if (reg_1 == 31 || reg_2 == 31)
+		{
 			int inst_ex_ordinal = instruction_ex_stage != null &&instruction_ex_stage.getOperationType() != null ?
 								  instruction_ex_stage.getOperationType().ordinal() : 1000;
 			int inst_ma_ordinal = instruction_ma_stage != null && instruction_ma_stage.getOperationType() != null ?
@@ -82,25 +93,30 @@ public class OperandFetch {
 								  instruction_rw_stage.getOperationType().ordinal() : 1000;
 
 			if (inst_ex_ordinal == 6 || inst_ex_ordinal == 7 || inst_ma_ordinal == 6 ||
-				inst_ma_ordinal == 7 || inst_rw_ordinal == 6 || inst_rw_ordinal == 7) {
+				inst_ma_ordinal == 7 || inst_rw_ordinal == 6 || inst_rw_ordinal == 7)
+			{
 				System.out.println("Conflict in division");
 				return true;
-			} else {
+			} else 
 				return false;
-			}
-		} else {
+
+		} else
 			return false;
-		}
 	}
 	
-	public void conflictBubblePCModify () {
+	public void conflictBubblePCModify ()
+	{
 		System.out.println("Conflict Observed");
 		IF_EnableLatch.setIF_enable(false);
 		OF_EX_Latch.setIsNOP(true);
 	}
  	
 	public void performOF() {
-		if (IF_OF_Latch.isOF_enable()) {
+		if (IF_OF_Latch.isOF_enable())
+		{
+			if (IF_OF_Latch.isOF_busy())
+				return;
+
 			Statistics.setNumberOfOFInstructions(Statistics.getNumberOfOFInstructions() + 1);
 			OperationType[] operationType = OperationType.values();
 			String instruction = Integer.toBinaryString(IF_OF_Latch.getInstruction());
@@ -292,6 +308,7 @@ public class OperandFetch {
 			}
 			OF_EX_Latch.setInstruction(inst);
 			OF_EX_Latch.setEX_enable(true);
+			IF_OF_Latch.setOF_busy(true);
 		}
 	}
 

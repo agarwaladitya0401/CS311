@@ -6,7 +6,7 @@ public class Statistics {
 	
 	static int numberOfInstructions;
 	static int numberOfOFStageInstructions;
-	static int numberOfCycles;
+	static long numberOfCycles;
 	static int numberOfBranchTaken;
 	static int numberOfRegisterWriteInstructions;
 
@@ -32,7 +32,7 @@ public class Statistics {
 		Statistics.numberOfInstructions = numberOfInstructions;
 	}
 
-	public static void setNumberOfCycles(int numberOfCycles) {
+	public static void setNumberOfCycles(long numberOfCycles) {
 		Statistics.numberOfCycles = numberOfCycles;
 	}
 
@@ -40,7 +40,7 @@ public class Statistics {
 		return numberOfInstructions;
 	}
 
-	public static int getNumberOfCycles() {
+	public static long getNumberOfCycles() {
 		return numberOfCycles;
 	}
 	

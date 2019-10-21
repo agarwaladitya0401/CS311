@@ -86,9 +86,13 @@ public class Simulator {
 			Clock.incrementClock();
 			
 			System.out.println("==================================");
+
+			if (Clock.getCurrentTime() > 200)
+				break;
 		}
 		
 		Statistics.setNumberOfCycles(Clock.getCurrentTime());
+
 		System.out.println("Number of Cycles: " + Statistics.getNumberOfCycles());
 		System.out.println("Number of OF Stalls: " + (Statistics.getNumberOfInstructions() - Statistics.getNumberOfRegisterWriteInstructions()));
 		System.out.println("Number of Wrong Branch Instructions: " + Statistics.getNumberOfBranchTaken());
