@@ -14,6 +14,12 @@ public class Simulator {
 		
 	static Processor processor;
 	static boolean simulationComplete;
+	static EventQueue eventQueue;
+
+	public static EventQueue getEventQueue()
+	{
+		return eventQueue;
+	}
 	
 	public static void setupSimulation(String assemblyProgramFile, Processor p)
 	{
@@ -25,22 +31,13 @@ public class Simulator {
 		{
 			e.printStackTrace();
 		}
-		
+
+		eventQueue = new EventQueue();
 		simulationComplete = false;
 	}
 	
 	static void loadProgram(String assemblyProgramFile) throws IOException
 	{
-		/*
-		 * TODO
-		 * 1. load the program into memory according to the program layout described
-		 *    in the ISA specification
-		 * 2. set PC to the address of the first instruction in the main
-		 * 3. set the following registers:
-		 *     x0 = 0
-		 *     x1 = 65535
-		 *     x2 = 65535
-		 */
 		InputStream is = null;
 		try
 		{
@@ -83,15 +80,15 @@ public class Simulator {
 			processor.getRWUnit().performRW();
 			processor.getMAUnit().performMA();
 			processor.getEXUnit().performEX();
+			eventQueue.processEvents();
 			processor.getOFUnit().performOF();
 			processor.getIFUnit().performIF();
 			Clock.incrementClock();
-
 			
 			System.out.println("==================================");
 		}
 		
-		Statistics.setNumberOfCycles(Statistics.getNumberOfCycles() + 1);
+		Statistics.setNumberOfCycles(Clock.getCurrentTime());
 		System.out.println("Number of Cycles: " + Statistics.getNumberOfCycles());
 		System.out.println("Number of OF Stalls: " + (Statistics.getNumberOfInstructions() - Statistics.getNumberOfRegisterWriteInstructions()));
 		System.out.println("Number of Wrong Branch Instructions: " + Statistics.getNumberOfBranchTaken());
