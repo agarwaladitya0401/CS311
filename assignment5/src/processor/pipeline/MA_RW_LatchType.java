@@ -4,7 +4,7 @@ import generic.Instruction;
 
 public class MA_RW_LatchType {
 	
-	boolean RW_enable;
+	boolean RW_enable, RW_busy;
 	Instruction instruction;
 	int load_result;
 	int alu_result;
@@ -54,5 +54,13 @@ public class MA_RW_LatchType {
 	
 	public void setIsNOP(boolean is_NOP) {
 		NOP = is_NOP;
+	}
+
+	public boolean isRW_busy() {
+		return RW_busy;
+	}
+
+	public void setRW_busy(boolean rW_busy){
+		 RW_busy = rW_busy;
 	}
 }

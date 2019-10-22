@@ -4,7 +4,7 @@ import generic.Instruction;
 
 public class EX_MA_LatchType {
 	
-	boolean MA_enable;
+	boolean MA_enable, MA_busy;
 	int alu_result;
 	boolean NOP;
 	Instruction instruction;
@@ -47,5 +47,12 @@ public class EX_MA_LatchType {
 		NOP = is_NOP;
 	}
 
+	public boolean isMA_busy() {
+		return MA_busy;
+	}
+
+	public void setMA_busy(boolean mA_busy){
+		 MA_busy = mA_busy;
+	}
 
 }

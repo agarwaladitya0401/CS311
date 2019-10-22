@@ -4,7 +4,7 @@ import generic.Instruction;
 
 public class OF_EX_LatchType {
 	
-	boolean EX_enable;
+	boolean EX_enable, EX_busy;
 	Instruction instruction;
 	boolean NOP;
 	public OF_EX_LatchType()
@@ -35,6 +35,14 @@ public class OF_EX_LatchType {
 	
 	public void setIsNOP(boolean is_NOP) {
 		NOP = is_NOP;
+	}
+
+	public boolean isEX_busy() {
+		return EX_busy;
+	}
+
+	public void setEX_busy(boolean eX_busy){
+		 EX_busy = eX_busy;
 	}
 
 }

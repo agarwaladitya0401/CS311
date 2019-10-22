@@ -29,6 +29,7 @@ public class InstructionFetch implements Element {
 		this.EX_IF_Latch = eX_IF_Latch;
 	}
 
+	@Override
 	public void handleEvent(Event e)
 	{
 		if (e.getEventType() == EventType.MemoryResponse)
