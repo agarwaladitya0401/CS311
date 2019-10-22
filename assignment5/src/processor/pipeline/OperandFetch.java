@@ -60,8 +60,8 @@ public class OperandFetch {
 		return twos;
 	}
 	
-	public static boolean checkConflict(Instruction instruction, int reg_1, int reg_2) {
-
+	public static boolean checkConflict(Instruction instruction, int reg_1, int reg_2)
+	{
 		int inst_ordinal = instruction != null && instruction.getOperationType() != null ?
 						   instruction.getOperationType().ordinal() : 1000;
 		if ((inst_ordinal <= 21 && inst_ordinal % 2 == 0) ||
@@ -114,13 +114,12 @@ public class OperandFetch {
 	public void performOF() {
 		if (IF_OF_Latch.isOF_enable())
 		{
-			if (IF_OF_Latch.isOF_busy())
-				return;
 
 			Statistics.setNumberOfOFInstructions(Statistics.getNumberOfOFInstructions() + 1);
 			OperationType[] operationType = OperationType.values();
 			String instruction = Integer.toBinaryString(IF_OF_Latch.getInstruction());
-			while (instruction.length() != 32) {
+			while (instruction.length() != 32)
+			{
 				instruction = "0" + instruction;
 			}
 			String opcode = instruction.substring(0, 5);
@@ -132,18 +131,18 @@ public class OperandFetch {
 				operation.ordinal() == 25 ||
 				operation.ordinal() == 26 ||
 				operation.ordinal() == 27 ||
-				operation.ordinal() == 28 ) {
+				operation.ordinal() == 28 )
+			{
 				IF_EnableLatch.setIF_enable(false);
 			}
-			
 
-			
 			boolean conflict_inst = false;
 			Instruction instruction_ex_stage = OF_EX_Latch.getInstruction();
 			Instruction instruction_ma_stage = EX_MA_Latch.getInstruction();
 			Instruction instruction_rw_stage = MA_RW_Latch.getInstruction();
 			Instruction inst = new Instruction();
-			switch (operation) {
+			switch (operation)
+			{
 			case add:
 			case sub:
 			case mul:
@@ -170,10 +169,12 @@ public class OperandFetch {
 					conflict_inst = true;
 				if (checkConflict(instruction_rw_stage, registerNo, registerNo2))
 					conflict_inst = true;
-				if (checkConflictWithDivision(registerNo, registerNo2)) {
+				if (checkConflictWithDivision(registerNo, registerNo2))
+				{
 					conflict_inst = true;
 				}
-				if (conflict_inst) {
+				if (conflict_inst)
+				{
 					this.conflictBubblePCModify();
 					break;
 				}
@@ -197,14 +198,17 @@ public class OperandFetch {
 				Operand op = new Operand();
 				String imm = instruction.substring(10, 32);
 				int imm_val = Integer.parseInt(imm, 2);
-				if (imm.charAt(0) == '1') {
+				if (imm.charAt(0) == '1')
+				{
 					imm = twosComplement(imm);
 					imm_val = Integer.parseInt(imm, 2) * -1;
 				}
-				if (imm_val != 0) {
+				if (imm_val != 0)
+				{
 					op.setOperandType(OperandType.Immediate);
 					op.setValue(imm_val);
-				} else {
+				} else
+				{
 					registerNo = Integer.parseInt(instruction.substring(5, 10), 2);
 					op.setOperandType(OperandType.Register);
 					op.setValue(registerNo);
@@ -235,10 +239,12 @@ public class OperandFetch {
 					conflict_inst = true;
 				if (checkConflict(instruction_rw_stage, registerNo, registerNo2))
 					conflict_inst = true;
-				if (checkConflictWithDivision(registerNo, registerNo2)) {
+				if (checkConflictWithDivision(registerNo, registerNo2))
+				{
 					conflict_inst = true;
 				}
-				if (conflict_inst) {
+				if (conflict_inst)
+				{
 					this.conflictBubblePCModify();
 					break;
 				}
@@ -248,7 +254,8 @@ public class OperandFetch {
 				rd.setOperandType(OperandType.Immediate);
 				imm = instruction.substring(15, 32);
 				imm_val = Integer.parseInt(imm, 2);
-				if (imm.charAt(0) == '1') {
+				if (imm.charAt(0) == '1')
+				{
 					imm = twosComplement(imm);
 					imm_val = Integer.parseInt(imm, 2) * -1;
 				}
@@ -266,20 +273,25 @@ public class OperandFetch {
 				rs1.setOperandType(OperandType.Register);
 				registerNo = Integer.parseInt(instruction.substring(5, 10), 2);
 				rs1.setValue(registerNo);
-				if (checkConflict(instruction_ex_stage, registerNo, registerNo)) {
+				if (checkConflict(instruction_ex_stage, registerNo, registerNo))
+				{
 					conflict_inst = true;
 				}	
-				if (checkConflict(instruction_ma_stage, registerNo, registerNo)) {
+				if (checkConflict(instruction_ma_stage, registerNo, registerNo))
+				{
 					conflict_inst = true;
 				}
-				if (checkConflict(instruction_rw_stage, registerNo, registerNo)) {
+				if (checkConflict(instruction_rw_stage, registerNo, registerNo))
+				{
 					conflict_inst = true;
 				}
-				if (checkConflictWithDivision(registerNo, registerNo)) {
+				if (checkConflictWithDivision(registerNo, registerNo))
+				{
 					conflict_inst = true;
 				}
 					
-				if (conflict_inst) {
+				if (conflict_inst)
+				{
 					this.conflictBubblePCModify();
 					break;
 				}
@@ -308,7 +320,6 @@ public class OperandFetch {
 			}
 			OF_EX_Latch.setInstruction(inst);
 			OF_EX_Latch.setEX_enable(true);
-			IF_OF_Latch.setOF_busy(true);
 		}
 	}
 
