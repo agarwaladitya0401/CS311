@@ -5,6 +5,7 @@ import generic.Event;
 import generic.Event.EventType;
 import generic.MemoryResponseEvent;
 import generic.MemoryReadEvent;
+import generic.MemoryWriteEvent;
 import generic.Simulator;
 import generic.Element;
 
@@ -52,6 +53,11 @@ public class MainMemory implements Element {
 					this,
 					event.getRequestingElement(),
 					getWord(event.getAddressToReadFrom())));
+		}
+		else if (e.getEventType() == EventType.MemoryWrite)
+		{
+			MemoryWriteEvent event = (MemoryWriteEvent) e;
+			setWord(event.getAddressToWriteTo(), event.getValue());
 		}
 	}
 }
