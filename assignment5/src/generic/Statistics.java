@@ -5,10 +5,9 @@ import java.io.PrintWriter;
 public class Statistics {
 	
 	static int numberOfInstructions;
-	static int numberOfOFStageInstructions;
+	static int numberOfNOPs;
 	static long numberOfCycles;
 	static int numberOfBranchTaken;
-	static int numberOfRegisterWriteInstructions;
 
 	public static void printStatistics(String statFile)
 	{
@@ -44,12 +43,12 @@ public class Statistics {
 		return numberOfCycles;
 	}
 	
-	public static void setNumberOfOFInstructions(int numberOfOFStageInstructions) {
-		Statistics.numberOfOFStageInstructions = numberOfOFStageInstructions;
+	public static void setNumberOfNOPs(int numberOfNOPs) {
+		Statistics.numberOfNOPs = numberOfNOPs;
 	}
 	
-	public static int getNumberOfOFInstructions() {
-		return numberOfOFStageInstructions;
+	public static int getNumberOfNOPs() {
+		return numberOfNOPs;
 	}
 	
 	public static void setNumberOfBranchTaken(int numberOfBranchTaken) {
@@ -59,12 +58,5 @@ public class Statistics {
 	public static int getNumberOfBranchTaken() {
 		return numberOfBranchTaken;
 	}
-	
-	public static void setnumberOfRegisterWriteInstructions(int numberOfRegisterWriteInstructions) {
-		Statistics.numberOfRegisterWriteInstructions = numberOfRegisterWriteInstructions;
-	}
-	
-	public static int getNumberOfRegisterWriteInstructions() {
-		return numberOfRegisterWriteInstructions;
-	}
+
 }

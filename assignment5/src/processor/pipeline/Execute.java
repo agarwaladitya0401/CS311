@@ -29,18 +29,40 @@ public class Execute {
 
 	public void performEX()
 	{
+<<<<<<< HEAD
+=======
+		if (OF_EX_Latch.EX_busy)
+		{
+			IF_OF_Latch.OF_busy = true;
+			return;
+		}
+		else
+		{
+			IF_OF_Latch.OF_busy = false;
+		}
+
+
+>>>>>>> assignment5
 		if (OF_EX_Latch.getIsNOP())
 		{
 			EX_MA_Latch.setIsNOP(true);
 			OF_EX_Latch.setIsNOP(false);
 			EX_MA_Latch.setInstruction(null);
+<<<<<<< HEAD
 		} else if (OF_EX_Latch.isEX_enable())
 		{
 			if (OF_EX_Latch.isEX_busy())
 				return;
 
+=======
+			OF_EX_Latch.setEX_enable(false);	
+		}
+		else if (OF_EX_Latch.isEX_enable())
+		{
+			OF_EX_Latch.setEX_enable(false);
+>>>>>>> assignment5
 			Instruction instruction = OF_EX_Latch.getInstruction();
-			System.out.println("EX is enabled: " + instruction);
+			System.out.println("****EX is enabled****: " + instruction);
 			EX_MA_Latch.setInstruction(instruction);
 			OperationType op_type = instruction.getOperationType();
 			int opcode = Arrays.asList(OperationType.values()).indexOf(op_type);
@@ -48,7 +70,14 @@ public class Execute {
 
 			if (opcode == 24 || opcode == 25 || opcode == 26 || opcode == 27 || opcode == 28 || opcode == 29)
 			{
+<<<<<<< HEAD
 				Statistics.setNumberOfBranchTaken(Statistics.getNumberOfBranchTaken() + 2);
+=======
+				if (opcode != 29)
+				{
+					Statistics.setNumberOfBranchTaken(Statistics.getNumberOfBranchTaken() + 1);
+				}
+>>>>>>> assignment5
 				IF_EnableLatch.setIF_enable(false);
 				IF_OF_Latch.setOF_enable(false);
 				OF_EX_Latch.setEX_enable(false);
@@ -104,7 +133,12 @@ public class Execute {
 					default:
 						break;
 				}
+<<<<<<< HEAD
 			} else if (opcode < 23)
+=======
+			}
+			else if (opcode < 23)
+>>>>>>> assignment5
 			{
 				int i = instruction.getSourceOperand1().getValue();
 				int op1 = containingProcessor.getRegisterFile().getValue(i);
@@ -156,13 +190,23 @@ public class Execute {
 					default:
 						break;
 				}
+<<<<<<< HEAD
 			} else if (opcode == 23)
+=======
+			}
+			else if (opcode == 23)
+>>>>>>> assignment5
 			{
 				int op1 = containingProcessor.getRegisterFile()
 						.getValue(instruction.getDestinationOperand().getValue());
 				int op2 = instruction.getSourceOperand2().getValue();
 				alu_result = op1 + op2;
+<<<<<<< HEAD
 			} else if (opcode == 24)
+=======
+			}
+			else if (opcode == 24)
+>>>>>>> assignment5
 			{
 				OperandType optype = instruction.getDestinationOperand().getOperandType();
 				int imm = 0;
@@ -170,13 +214,23 @@ public class Execute {
 				{
 					imm = containingProcessor.getRegisterFile()
 							.getValue(instruction.getDestinationOperand().getValue());
+<<<<<<< HEAD
 				} else
+=======
+				}
+				else
+>>>>>>> assignment5
 				{
 					imm = instruction.getDestinationOperand().getValue();
 				}
 				alu_result = imm + currentPC;
 				EX_IF_Latch.setIS_enable(true, alu_result);
+<<<<<<< HEAD
 			} else if (opcode < 29)
+=======
+			}
+			else if (opcode < 29)
+>>>>>>> assignment5
 			{
 				int op1 = containingProcessor.getRegisterFile().getValue(instruction.getSourceOperand1().getValue());
 				int op2 = containingProcessor.getRegisterFile().getValue(instruction.getSourceOperand2().getValue());

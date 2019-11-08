@@ -95,7 +95,7 @@ public class OperandFetch {
 			if (inst_ex_ordinal == 6 || inst_ex_ordinal == 7 || inst_ma_ordinal == 6 ||
 				inst_ma_ordinal == 7 || inst_rw_ordinal == 6 || inst_rw_ordinal == 7)
 			{
-				System.out.println("Conflict in division");
+				System.out.println("****Conflict in division****");
 				return true;
 			} else 
 				return false;
@@ -106,19 +106,33 @@ public class OperandFetch {
 	
 	public void conflictBubblePCModify ()
 	{
-		System.out.println("Conflict Observed");
+		System.out.println("****Conflict Observed****");
 		IF_EnableLatch.setIF_enable(false);
 		OF_EX_Latch.setIsNOP(true);
+		Statistics.setNumberOfNOPs(Statistics.getNumberOfNOPs() + 1);
 	}
  	
+<<<<<<< HEAD
 	public void performOF()
 	{
 		if (IF_OF_Latch.isOF_enable())
+=======
+	public void performOF() {
+		if (IF_OF_Latch.OF_busy)
 		{
-			if (IF_OF_Latch.isOF_busy())
-				return;
+			return;
+		}
 
-			Statistics.setNumberOfOFInstructions(Statistics.getNumberOfOFInstructions() + 1);
+		if (IF_EnableLatch.isIF_busy())
+>>>>>>> assignment5
+		{
+			OF_EX_Latch.setIsNOP(true);
+			return;
+		}
+
+		if (IF_OF_Latch.isOF_enable())
+		{
+			
 			OperationType[] operationType = OperationType.values();
 			String instruction = Integer.toBinaryString(IF_OF_Latch.getInstruction());
 			while (instruction.length() != 32)
@@ -128,7 +142,7 @@ public class OperandFetch {
 			String opcode = instruction.substring(0, 5);
 			int type_operation = Integer.parseInt(opcode, 2);
 			OperationType operation = operationType[type_operation];
-			System.out.println("OF is enabled: " + operation);
+			System.out.println("****OF is enabled****: " + operation);
 			
 			if (operation.ordinal() == 24 ||
 				operation.ordinal() == 25 ||
@@ -138,9 +152,7 @@ public class OperandFetch {
 			{
 				IF_EnableLatch.setIF_enable(false);
 			}
-			
 
-			
 			boolean conflict_inst = false;
 			Instruction instruction_ex_stage = OF_EX_Latch.getInstruction();
 			Instruction instruction_ma_stage = EX_MA_Latch.getInstruction();
@@ -148,6 +160,7 @@ public class OperandFetch {
 			Instruction inst = new Instruction();
 			switch (operation)
 			{
+<<<<<<< HEAD
 				case add:
 				case sub:
 				case mul:
@@ -176,6 +189,43 @@ public class OperandFetch {
 						conflict_inst = true;
 					if (checkConflictWithDivision(registerNo, registerNo2))
 						conflict_inst = true;
+=======
+			case add:
+			case sub:
+			case mul:
+			case div:
+			case and:
+			case or:
+			case xor:
+			case slt:
+			case sll:
+			case srl:
+			case sra:
+				Operand rs1 = new Operand();
+				rs1.setOperandType(OperandType.Register);
+				int registerNo = Integer.parseInt(instruction.substring(5, 10), 2);
+				rs1.setValue(registerNo);
+
+				Operand rs2 = new Operand();
+				rs2.setOperandType(OperandType.Register);
+				int registerNo2 = Integer.parseInt(instruction.substring(10, 15), 2);
+				rs2.setValue(registerNo2);
+				if (checkConflict(instruction_ex_stage, registerNo, registerNo2))
+					conflict_inst = true;
+				if (checkConflict(instruction_ma_stage, registerNo, registerNo2))
+					conflict_inst = true;
+				if (checkConflict(instruction_rw_stage, registerNo, registerNo2))
+					conflict_inst = true;
+				if (checkConflictWithDivision(registerNo, registerNo2))
+				{
+					conflict_inst = true;
+				}
+				if (conflict_inst)
+				{
+					this.conflictBubblePCModify();
+					break;
+				}
+>>>>>>> assignment5
 
 					if (conflict_inst)
 					{
@@ -188,11 +238,37 @@ public class OperandFetch {
 					registerNo = Integer.parseInt(instruction.substring(15, 20), 2);
 					rd.setValue(registerNo);
 
+<<<<<<< HEAD
 					inst.setOperationType(operationType[type_operation]);
 					inst.setSourceOperand1(rs1);
 					inst.setSourceOperand2(rs2);
 					inst.setDestinationOperand(rd);
 					break;
+=======
+			case end:
+				inst.setOperationType(operationType[type_operation]);
+				IF_EnableLatch.setIF_enable(false);
+				break;
+			case jmp:
+				Operand op = new Operand();
+				String imm = instruction.substring(10, 32);
+				int imm_val = Integer.parseInt(imm, 2);
+				if (imm.charAt(0) == '1')
+				{
+					imm = twosComplement(imm);
+					imm_val = Integer.parseInt(imm, 2) * -1;
+				}
+				if (imm_val != 0)
+				{
+					op.setOperandType(OperandType.Immediate);
+					op.setValue(imm_val);
+				} else
+				{
+					registerNo = Integer.parseInt(instruction.substring(5, 10), 2);
+					op.setOperandType(OperandType.Register);
+					op.setValue(registerNo);
+				}
+>>>>>>> assignment5
 
 				case end:
 					inst.setOperationType(operationType[type_operation]);
@@ -218,10 +294,42 @@ public class OperandFetch {
 						op.setValue(registerNo);
 					}
 
+<<<<<<< HEAD
 					inst.setOperationType(operationType[type_operation]);
 					inst.setDestinationOperand(op);
+=======
+			case beq:
+			case bne:
+			case blt:
+			case bgt:
+				rs1 = new Operand();
+				rs1.setOperandType(OperandType.Register);
+				registerNo = Integer.parseInt(instruction.substring(5, 10), 2);
+				rs1.setValue(registerNo);
+				
+				// destination register
+				rs2 = new Operand();
+				rs2.setOperandType(OperandType.Register);
+				registerNo2 = Integer.parseInt(instruction.substring(10, 15), 2);
+				rs2.setValue(registerNo2);
+				
+				if (checkConflict(instruction_ex_stage, registerNo, registerNo2))
+					conflict_inst = true;
+				if (checkConflict(instruction_ma_stage, registerNo, registerNo2))
+					conflict_inst = true;
+				if (checkConflict(instruction_rw_stage, registerNo, registerNo2))
+					conflict_inst = true;
+				if (checkConflictWithDivision(registerNo, registerNo2))
+				{
+					conflict_inst = true;
+				}
+				if (conflict_inst)
+				{
+					this.conflictBubblePCModify();
+>>>>>>> assignment5
 					break;
 
+<<<<<<< HEAD
 				case beq:
 				case bne:
 				case blt:
@@ -268,6 +376,52 @@ public class OperandFetch {
 					inst.setSourceOperand1(rs1);
 					inst.setSourceOperand2(rs2);
 					inst.setDestinationOperand(rd);
+=======
+				// Immediate value
+				rd = new Operand();
+				rd.setOperandType(OperandType.Immediate);
+				imm = instruction.substring(15, 32);
+				imm_val = Integer.parseInt(imm, 2);
+				if (imm.charAt(0) == '1')
+				{
+					imm = twosComplement(imm);
+					imm_val = Integer.parseInt(imm, 2) * -1;
+				}
+				rd.setValue(imm_val);
+				
+				inst.setOperationType(operationType[type_operation]);
+				inst.setSourceOperand1(rs1);
+				inst.setSourceOperand2(rs2);
+				inst.setDestinationOperand(rd);
+				break;
+
+			default:
+				// Source register 1
+				rs1 = new Operand();
+				rs1.setOperandType(OperandType.Register);
+				registerNo = Integer.parseInt(instruction.substring(5, 10), 2);
+				rs1.setValue(registerNo);
+				if (checkConflict(instruction_ex_stage, registerNo, registerNo))
+				{
+					conflict_inst = true;
+				}	
+				if (checkConflict(instruction_ma_stage, registerNo, registerNo))
+				{
+					conflict_inst = true;
+				}
+				if (checkConflict(instruction_rw_stage, registerNo, registerNo))
+				{
+					conflict_inst = true;
+				}
+				if (checkConflictWithDivision(registerNo, registerNo))
+				{
+					conflict_inst = true;
+				}
+					
+				if (conflict_inst)
+				{
+					this.conflictBubblePCModify();
+>>>>>>> assignment5
 					break;
 
 				default:
@@ -316,9 +470,16 @@ public class OperandFetch {
 			}
 			OF_EX_Latch.setInstruction(inst);
 			OF_EX_Latch.setEX_enable(true);
+<<<<<<< HEAD
 			OF_EX_Latch.setEX_busy(false);
 			IF_OF_Latch.setOF_busy(true);
 
+=======
+			if (!OF_EX_Latch.getIsNOP())
+			{
+				IF_OF_Latch.setOF_enable(false);
+			}
+>>>>>>> assignment5
 		}
 	}
 

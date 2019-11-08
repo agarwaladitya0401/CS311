@@ -5,8 +5,10 @@ import generic.Event;
 import generic.Event.EventType;
 import generic.MemoryResponseEvent;
 import generic.MemoryReadEvent;
+import generic.MemoryWriteEvent;
 import generic.Simulator;
 import generic.Element;
+import processor.pipeline.MemoryAccess;
 
 public class MainMemory implements Element {
 	int[] memory;
@@ -52,6 +54,18 @@ public class MainMemory implements Element {
 					this,
 					event.getRequestingElement(),
 					getWord(event.getAddressToReadFrom())));
+		}
+		else if (e.getEventType() == EventType.MemoryWrite)
+		{
+			MemoryWriteEvent event = (MemoryWriteEvent) e;
+			setWord(event.getAddressToWriteTo(), event.getValue());
+
+			MemoryAccess memory_access = (MemoryAccess) event.getRequestingElement();
+			memory_access.EX_MA_Latch.setMA_busy(false);
+			memory_access.EX_MA_Latch.setMA_enable(false);
+			memory_access.MA_RW_Latch.setRW_enable(true);
+			memory_access.MA_RW_Latch.setInstruction(memory_access.instruction);
+			System.out.println("****MA Event Handled (Store)****");
 		}
 	}
 }

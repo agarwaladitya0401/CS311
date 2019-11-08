@@ -12,6 +12,7 @@ public class EX_MA_LatchType {
 	public EX_MA_LatchType()
 	{
 		MA_enable = false;
+		MA_busy = false;
 		NOP = false;
 	}
 
@@ -47,12 +48,21 @@ public class EX_MA_LatchType {
 		NOP = is_NOP;
 	}
 
+<<<<<<< HEAD
 	public boolean isMA_busy() {
 		return MA_busy;
 	}
 
 	public void setMA_busy(boolean mA_busy){
 		 MA_busy = mA_busy;
+=======
+	public void setMA_busy(boolean mA_busy) {
+		MA_busy = mA_busy;
+	}
+
+	public boolean isMA_busy() {
+		return MA_busy;
+>>>>>>> assignment5
 	}
 
 }
