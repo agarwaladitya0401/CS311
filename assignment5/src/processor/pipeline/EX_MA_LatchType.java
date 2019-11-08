@@ -56,5 +56,4 @@ public class EX_MA_LatchType {
 		return MA_busy;
 	}
 
-
 }

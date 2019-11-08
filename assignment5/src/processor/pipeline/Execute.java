@@ -29,17 +29,29 @@ public class Execute {
 
 	public void performEX()
 	{
+		if (OF_EX_Latch.EX_busy)
+		{
+			IF_OF_Latch.OF_busy = true;
+			return;
+		}
+		else
+		{
+			IF_OF_Latch.OF_busy = false;
+		}
+
+
 		if (OF_EX_Latch.getIsNOP())
 		{
 			EX_MA_Latch.setIsNOP(true);
 			OF_EX_Latch.setIsNOP(false);
 			EX_MA_Latch.setInstruction(null);
+			OF_EX_Latch.setEX_enable(false);	
 		}
 		else if (OF_EX_Latch.isEX_enable())
 		{
-
+			OF_EX_Latch.setEX_enable(false);
 			Instruction instruction = OF_EX_Latch.getInstruction();
-			System.out.println("EX is enabled: " + instruction);
+			System.out.println("****EX is enabled****: " + instruction);
 			EX_MA_Latch.setInstruction(instruction);
 			OperationType op_type = instruction.getOperationType();
 			int opcode = Arrays.asList(OperationType.values()).indexOf(op_type);
@@ -47,7 +59,10 @@ public class Execute {
 
 			if (opcode == 24 || opcode == 25 || opcode == 26 || opcode == 27 || opcode == 28 || opcode == 29)
 			{
-				Statistics.setNumberOfBranchTaken(Statistics.getNumberOfBranchTaken() + 2);
+				if (opcode != 29)
+				{
+					Statistics.setNumberOfBranchTaken(Statistics.getNumberOfBranchTaken() + 1);
+				}
 				IF_EnableLatch.setIF_enable(false);
 				IF_OF_Latch.setOF_enable(false);
 				OF_EX_Latch.setEX_enable(false);

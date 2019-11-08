@@ -16,7 +16,6 @@ public class EventQueue {
 	
 	public void addEvent(Event event)
 	{
-		System.out.println("Added Event");
 		queue.add(event);
 	}
 
@@ -25,7 +24,6 @@ public class EventQueue {
 		while(queue.isEmpty() == false && queue.peek().getEventTime() <= Clock.getCurrentTime())
 		{
 			Event event = queue.poll();
-			System.out.println("Handled Event");
 			event.getProcessingElement().handleEvent(event);
 		}
 	}

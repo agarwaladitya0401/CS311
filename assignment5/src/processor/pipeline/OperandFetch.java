@@ -95,7 +95,7 @@ public class OperandFetch {
 			if (inst_ex_ordinal == 6 || inst_ex_ordinal == 7 || inst_ma_ordinal == 6 ||
 				inst_ma_ordinal == 7 || inst_rw_ordinal == 6 || inst_rw_ordinal == 7)
 			{
-				System.out.println("Conflict in division");
+				System.out.println("****Conflict in division****");
 				return true;
 			} else 
 				return false;
@@ -106,16 +106,27 @@ public class OperandFetch {
 	
 	public void conflictBubblePCModify ()
 	{
-		System.out.println("Conflict Observed");
+		System.out.println("****Conflict Observed****");
 		IF_EnableLatch.setIF_enable(false);
 		OF_EX_Latch.setIsNOP(true);
+		Statistics.setNumberOfNOPs(Statistics.getNumberOfNOPs() + 1);
 	}
  	
 	public void performOF() {
+		if (IF_OF_Latch.OF_busy)
+		{
+			return;
+		}
+
+		if (IF_EnableLatch.isIF_busy())
+		{
+			OF_EX_Latch.setIsNOP(true);
+			return;
+		}
+
 		if (IF_OF_Latch.isOF_enable())
 		{
-
-			Statistics.setNumberOfOFInstructions(Statistics.getNumberOfOFInstructions() + 1);
+			
 			OperationType[] operationType = OperationType.values();
 			String instruction = Integer.toBinaryString(IF_OF_Latch.getInstruction());
 			while (instruction.length() != 32)
@@ -125,7 +136,7 @@ public class OperandFetch {
 			String opcode = instruction.substring(0, 5);
 			int type_operation = Integer.parseInt(opcode, 2);
 			OperationType operation = operationType[type_operation];
-			System.out.println("OF is enabled: " + operation);
+			System.out.println("****OF is enabled****: " + operation);
 			
 			if (operation.ordinal() == 24 ||
 				operation.ordinal() == 25 ||
@@ -320,6 +331,10 @@ public class OperandFetch {
 			}
 			OF_EX_Latch.setInstruction(inst);
 			OF_EX_Latch.setEX_enable(true);
+			if (!OF_EX_Latch.getIsNOP())
+			{
+				IF_OF_Latch.setOF_enable(false);
+			}
 		}
 	}
 

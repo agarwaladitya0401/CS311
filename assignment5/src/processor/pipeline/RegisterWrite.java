@@ -23,15 +23,16 @@ public class RegisterWrite {
 	{
 		if (MA_RW_Latch.getIsNOP())
 		{
+			//System.out.println("Got NOP in RW");
 			MA_RW_Latch.setIsNOP(false);
 		}
 		else if (MA_RW_Latch.isRW_enable())
 		{
-			Statistics.setnumberOfRegisterWriteInstructions(Statistics.getNumberOfRegisterWriteInstructions() + 1);
+			MA_RW_Latch.setRW_enable(false);
 			Instruction instruction = MA_RW_Latch.getInstruction();
 			int alu_result = MA_RW_Latch.getALU_result();
 			OperationType op_type = instruction.getOperationType();
-			System.out.println("RW is enabled: " + instruction);
+			System.out.println("****RW is enabled****: " + instruction);
 			switch (op_type)
 			{
 				case store:

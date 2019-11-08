@@ -77,25 +77,30 @@ public class Simulator {
 	{
 		while(simulationComplete == false)
 		{
+			//System.out.println("Calling RW");
 			processor.getRWUnit().performRW();
+			//System.out.println("Calling MA");
 			processor.getMAUnit().performMA();
+			//System.out.println("Calling EX");
 			processor.getEXUnit().performEX();
+			//System.out.println("Calling Events");
 			eventQueue.processEvents();
+			//System.out.println("Calling OF");
 			processor.getOFUnit().performOF();
+			//System.out.println("Calling IF");
 			processor.getIFUnit().performIF();
 			Clock.incrementClock();
 			
 			System.out.println("==================================");
 
-			if (Clock.getCurrentTime() > 200)
-				break;
 		}
 		
 		Statistics.setNumberOfCycles(Clock.getCurrentTime());
 
 		System.out.println("Number of Cycles: " + Statistics.getNumberOfCycles());
-		System.out.println("Number of OF Stalls: " + (Statistics.getNumberOfInstructions() - Statistics.getNumberOfRegisterWriteInstructions()));
-		System.out.println("Number of Wrong Branch Instructions: " + Statistics.getNumberOfBranchTaken());
+		System.out.println("Number of Instructions: " + Statistics.getNumberOfInstructions());
+		System.out.println("Number of Data Hazard NOPs: " + Statistics.getNumberOfNOPs());
+		System.out.println("Number of Control Hazard NOPs: " + Statistics.getNumberOfBranchTaken() * 2);
 	}
 	
 	public static void setSimulationComplete(boolean value)

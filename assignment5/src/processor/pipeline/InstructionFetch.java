@@ -10,6 +10,7 @@ import generic.MemoryResponseEvent;
 import generic.Event;
 import generic.Event.EventType;
 import configuration.Configuration;
+import generic.Instruction.OperationType;
 
 public class InstructionFetch implements Element {
 	
@@ -31,26 +32,43 @@ public class InstructionFetch implements Element {
 
 	public void handleEvent(Event e)
 	{
-		if (e.getEventType() == EventType.MemoryResponse)
+		if (IF_OF_Latch.OF_busy)
+		{
+			e.setEventTime(Clock.getCurrentTime() + 1);
+			Simulator.getEventQueue().addEvent(e);
+		}
+		else if (e.getEventType() == EventType.MemoryResponse)
 		{
 			MemoryResponseEvent event = (MemoryResponseEvent) e;
 			int newInstruction = event.getValue();
-			System.out.println("IF is enabled: " + Integer.toBinaryString(newInstruction));
 			IF_OF_Latch.setInstruction(newInstruction);
-			IF_OF_Latch.setOF_enable(true);
 			IF_EnableLatch.setIF_busy(false);
-			IF_OF_Latch.setOF_busy(false);
+			IF_OF_Latch.setOF_enable(true);
+
+			System.out.println("****IF Event Handled****");
+
+			String instruction = Integer.toBinaryString(newInstruction);
+			while (instruction.length() != 32)
+			{
+				instruction = "0" + instruction;
+			}
+			String opcode = instruction.substring(0, 5);
+			int type_operation = Integer.parseInt(opcode, 2);
+			OperationType[] operationType = OperationType.values();
+			OperationType operation = operationType[type_operation];
+			System.out.println("****IF is enabled****: " + operation);
 		}
 	}
 	
 	public void performIF()
 	{
+		if(IF_EnableLatch.isIF_busy())
+		{
+			return;
+		}
+
 		if(IF_EnableLatch.isIF_enable())
 		{
-			if(IF_EnableLatch.isIF_busy())
-			{
-				return;
-			}
 
 			if(EX_IF_Latch.getIS_enable())
 			{
@@ -60,7 +78,7 @@ public class InstructionFetch implements Element {
 			}
 
 			int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
-			System.out.println("currentPC " + Integer.toString(currentPC));
+			System.out.println("****currentPC**** " + Integer.toString(currentPC));
 
 			Simulator.getEventQueue().addEvent(
 				new MemoryReadEvent(
@@ -68,11 +86,11 @@ public class InstructionFetch implements Element {
 					this,
 					containingProcessor.getMainMemory(),
 					currentPC));
+			System.out.println("****IF Event Added****");
 
 			IF_EnableLatch.setIF_busy(true);
 			containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
 			Statistics.setNumberOfInstructions(Statistics.getNumberOfInstructions() + 1);
-
 		}
 	}
 
